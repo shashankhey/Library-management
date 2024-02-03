@@ -1,0 +1,153 @@
+<?php
+    session_start();
+
+    if(isset($_SESSION['uid']))
+    {
+        // echo $_SESSION['uid'];
+    }
+    else
+    {
+        // echo "error";
+        header('location: ../login.php');
+    }
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <link rel="stylesheet" href="update.css">
+</head>
+<body>
+    
+    <i class="bi bi-list mobile-nav-toggle d-xl-none"></i>
+
+    
+    <header id="header">
+      <div class="d-flex flex-column">
+          <div class="clock">
+            <div class="center-nut"></div>
+            <div class="center-nut2"></div>
+            <div class="indicators">
+               <div></div>
+               <div></div>
+               <div></div>
+               <div></div>
+               <div></div>
+               <div></div>
+               <div></div>
+               <div></div>
+               <div></div>
+               <div></div>
+               <div></div>
+               <div></div>
+            </div>
+            <div class="sec-hand">
+               <div class="sec"></div>
+            </div>
+            <div class="min-hand">
+               <div class="min"></div>
+            </div>
+            <div class="hr-hand">
+               <div class="hr"></div>
+            </div>
+         </div>
+         <script>
+            const sec = document.querySelector(".sec");
+            const min = document.querySelector(".min");
+            const hr = document.querySelector(".hr");
+            setInterval(function(){
+              let time  = new Date();
+              let secs = time.getSeconds() * 6;
+              let mins = time.getMinutes() * 6;
+              let hrs = time.getHours() * 30;
+              sec.style.transform = `rotateZ(${secs}deg)`;
+              min.style.transform = `rotateZ(${mins}deg)`;
+              hr.style.transform = `rotateZ(${hrs+(mins/12)}deg)`;
+            });
+         </script>
+        </div>
+        <nav id="navbar" class="nav-menu navbar">
+          <ul>
+            <li><a href="../Home/home.php" class="nav-link scrollto active"><i class="bx bx-home"></i> <span>Admin</span></a></li>
+            <li><a href="../student/student.php" class="nav-link scrollto"><i class="bx bx-user"></i> <span>Student</span></a></li>
+            <li><a href="../issue/issue.php" class="nav-link scrollto"><i class="bx bx-file-blank"></i> <span>Issue</span></a></li>
+            <li><a href="../return/return.php" class="nav-link scrollto"><i class="bx bx-book-content"></i> <span>Return</span></a></li>
+            <li><a href="../addbook/addbook.php" class="nav-link scrollto"><i class="bx bx-server"></i> <span>Add Book</span></a></li>
+            <li><a href="../searchbook/searchbook.php" class="nav-link scrollto"><i class="bx bx-envelope"></i> <span>Search</span></a></li>
+            <li><a href="../admin/logout.php" class="nav-link scrollto"><span>Log out</span></a></li>
+
+          </ul>
+        </nav>
+      </div>
+      
+    </header>
+    <section id="heading" class="d-flex flex-column justify-content-center align-items-center">
+      <div class="heading-container">
+        <h1>M.W.A  SCHOOL</h1>
+      </div>
+    </section>
+    
+    <section id="welcome" class="d-flex flex-column justify-content-center align-items-center">
+      <div class="welcome-container ">
+        <h1><span>Student</span></h1>
+        <form class="usn" action="updatedata.php" method="post">
+    <tr>
+        <th>Enter ID:-</th>   
+            <td><input type="text" name="sid" placeholder="Student ID" required="required"/> </td>
+            <td><input type="submit" name="submit" value="Submit" ></td>
+    </tr>
+        </form>  
+        <table class="data" border="2" cellspacing="0" align="center" background="black">
+        <th style="padding: 5px;">ID</th>
+        <th style="padding: 5px;">Name</th>
+        <th style="padding: 5px;">Dept.</th>
+        <th style="padding: 5px;">Phone</th>
+        <th style="padding: 5px;">Email</th>
+        <th style="padding: 5px;">Action</th>
+    </tr>
+    </div>
+    </section>
+
+</html>
+        
+
+
+<?php
+    if(isset($_POST['submit'])){
+        include('../dbcon.php');
+        $sid = $_POST['sid'];
+
+        $sql =  "SELECT * FROM `student` WHERE `sid`='$sid'";
+        $run = mysqli_query($con,$sql);
+
+        if(mysqli_num_rows($run)<1)
+        {
+            echo "<tr><td colspan='5'>No Records Found</td></tr>";
+        }
+        else
+        {   
+            while($data=mysqli_fetch_assoc($run))
+            {
+                ?>
+            <tr id="data" align="center" cellspacing="2" border="2" style="color: white; margin:2px;">
+                <td style="padding: 5px;"><?php echo $data['sid'] ?></td>
+                <td style="padding: 5px;"><?php echo $data['name']; ?></td>
+                <td style="padding: 5px;"><?php echo $data['dept']; ?></td>
+                <td style="padding: 5px;"><?php echo $data['phone']; ?></td>
+                <td style="padding: 5px;"><?php echo $data['email']; ?></td>
+                <td style="padding: 5px; border: 2px solid; border-radius: 0px;"><a href="updateform.php?sid=<?php echo $data['sid']; ?>">Update</a></td>
+
+            </tr>
+
+<?php
+
+
+            }
+        }
+    }
+
+?>
